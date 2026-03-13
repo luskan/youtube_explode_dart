@@ -127,9 +127,16 @@ class ClosedCaptionClient {
     return ClosedCaptionTrack(captions);
   }
 
-  /// Returns the subtitles as a string. In XML format.
+  /// Returns the subtitles as a string.
   Future<String> getSubTitles(ClosedCaptionTrackInfo trackInfo) async {
-    final r = await _httpClient.get(trackInfo.url);
+    // Caption URLs from the Android API require Android user-agent headers.
+    final r = await _httpClient.get(
+      trackInfo.url,
+      headers: {
+        'user-agent':
+            'com.google.android.youtube/20.10.38 (Linux; U; Android 11) gzip',
+      },
+    );
     return utf8.decode(r.bodyBytes, allowMalformed: true);
   }
 }

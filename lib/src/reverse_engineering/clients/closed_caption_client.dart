@@ -25,8 +25,15 @@ class ClosedCaptionClient {
     Uri url,
   ) {
     final formatUrl = url.replaceQueryParameters({'fmt': 'srv3'});
+    // Caption URLs from Android API require Android user-agent headers.
     return retry(httpClient, () async {
-      final raw = await httpClient.getString(formatUrl);
+      final raw = await httpClient.getString(
+        formatUrl,
+        headers: {
+          'user-agent':
+              'com.google.android.youtube/20.10.38 (Linux; U; Android 11) gzip',
+        },
+      );
       return ClosedCaptionClient.parse(raw);
     });
   }
